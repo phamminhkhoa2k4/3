@@ -1,0 +1,80 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Age</th>
+      <th scope="col">Occupation</th>
+      <th scope="col">Create Time</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+     {{#each profiles}}
+    <tr>
+      <th scope="row">{{sum @index 1}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.age}}</td>
+      <td>{{this.occupation}}</td>
+      <td>{{this.createdAt}}</td>
+      <td><a href="" class="btn btn-primary btn-restore" data-id="{{ this._id }}" >Edit</a> <button type="button" class="btn btn-danger" data-id="{{ this._id }}" data-bs-toggle="modal"  data-bs-target="#exampleModal">Delete</button></td>
+    </tr>
+    {{ else }}
+      <tr>
+        <td colspan="5" style="color:red" class="text-center">You haven't Product. <a href="/profile/create/" style="color:red"  >Post Profile</a></td>
+      </tr>
+      {{/each}}
+  </tbody>
+</table>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="btn-delete-profile" >Delete it</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<form name="delete-profile-form" method="POST"></form>
+<form name="restore-profile-form" method="POST"></form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function(event) {
+    var profileId;
+    var deleteForm =  document.forms['delete-profile-form'];
+    var restoreForm =  document.forms['restore-profile-form'];
+    var restoreBtn = $('.btn-restore');
+    $('#exampleModal').on('show.bs.modal', function(event) {
+      var button = $(event.relatedTarget);
+      profileId = button.data('id');
+    });
+    
+    var btnDeleteProfile = document.getElementById('btn-delete-profile');
+
+    btnDeleteProfile.onclick = function() {
+      deleteForm.action = '/profile/' + profileId + '?_method=DELETE';
+      deleteForm.submit();
+    };
+    restoreBtn.click(function (e) {
+        e.preventDefault();
+        var profileId = $(this).data('id');
+        restoreForm.action = '/profile/' + profileId + '/restore?_method=PATCH';
+        restoreForm.submit();
+    })
+  });
+
+</script>
